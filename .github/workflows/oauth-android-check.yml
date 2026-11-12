@@ -1,0 +1,24 @@
+name: Matick Nube - contrato OAuth Android
+
+on:
+  push:
+    branches: ['fix/matick-nube-oauth-android-20261112']
+  pull_request:
+    branches: ['feat/studio-cloud-ui-20261112']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-oauth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar sintaxis de servidor y entradas
+        run: python -m py_compile huggingface/app.py huggingface/entradas.py
+      - name: Pruebas de contrato OAuth y Android
+        run: python -m unittest discover -s pruebas -p 'test_oauth_contract.py' -v
