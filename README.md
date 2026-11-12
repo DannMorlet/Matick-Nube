@@ -23,3 +23,9 @@ Puedes cambiar el puerto con la variable `PUERTO`. La imagen de llama.cpp usa CP
 Con Node.js 20 o posterior, ejecuta `npm test`. Para usar un servidor llama.cpp ya iniciado, define `LLAMA_URL` con su dirección y ejecuta `npm start`. El servidor de Matick Nube usa el puerto indicado en `PORT` o el 8080 por defecto.
 
 La conversación permanece en la pestaña actual y se pierde al recargar. Las solicitudes se atienden de una en una; el contador no representa una cola. Para un servicio público sostenido aún hacen falta límites de uso por usuario, protección contra abuso, observabilidad y una política de privacidad. No se incluyen credenciales en el repositorio.
+
+## Hugging Face Spaces
+
+La variante para el espacio gratuito ZeroGPU está en `huggingface/`. Descarga el GGUF de texto ya publicado en `danymorlet/Matick-Gemma-4-E2B-Mexicano-v3-GGUF` y usa llama-cpp-python. La GPU se solicita para cada respuesta y el contexto es de 4,096 tokens. El servicio está sujeto a las cuotas y a la disponibilidad de Hugging Face; la compatibilidad final debe validarse en el espacio.
+
+El espacio se administra por separado de este repositorio: los cambios en GitHub no se publican automáticamente en Hugging Face.
