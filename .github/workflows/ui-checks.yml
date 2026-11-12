@@ -1,0 +1,29 @@
+name: Matick Nube - validación de interfaz
+
+on:
+  pull_request:
+    paths:
+      - "huggingface/web/**"
+      - "pruebas/**"
+      - "package.json"
+      - ".github/workflows/ui-checks.yml"
+  push:
+    branches:
+      - feat/ui-pulida-responsive-20261112
+
+permissions:
+  contents: read
+
+jobs:
+  check-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Ejecutar pruebas sin dependencias externas
+        run: npm test
