@@ -6,7 +6,7 @@ let sessions = saved(key, {chat:[],work:[]}), projects = saved(projectKey,[]);
 if (!sessions || !Array.isArray(sessions.chat) || !Array.isArray(sessions.work)) sessions = {chat:[],work:[]};
 if (!Array.isArray(projects)) projects = [];
 let tab = "work", busy = false, files = [], events = [], modeWeb = "auto", careful = false, speak = false, server = null;
-let spriteType = "idle", spriteIndex = 0, spriteRemaining = 0;
+let spriteType = "idle", spriteIndex = 0, spriteRemaining = 0, clareFallback = false;
 const frames = {idle:6,waving:4,review:6,failed:8};
 function announce(msg) { $("announcement").textContent = msg; }
 function persist() {
@@ -24,28 +24,69 @@ function modal(title,message) {
   if (!$("modal").open) $("modal").showModal();
 }
 $("close").onclick=()=> $("modal").close();
-function play(type) { spriteType=type; spriteIndex=0; spriteRemaining=type==="idle"?0:frames[type]*2; }
+function play(type) {
+  spriteType=type; spriteIndex=0; spriteRemaining=type==="idle"?0:frames[type]*2;
+  const img=$("clare-sprite");
+  if(clareFallback && img && typeof img.animate==="function" &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    img.animate([
+      {transform:"translateY(0) rotate(0deg)"},
+      {transform:"translateY(-9px) rotate(-9deg)"},
+      {transform:"translateY(-4px) rotate(8deg)"},
+      {transform:"translateY(0) rotate(0deg)"}
+    ],{duration:680,easing:"ease-in-out"});
+  }
+}
 function tick() {
+  if(clareFallback) return;
   const img=$("clare-sprite");
   const src="/clare/"+spriteType+"/"+String(spriteIndex).padStart(2,"0")+".png";
   if(img.getAttribute("src")!==src) img.src=src;
   spriteIndex=(spriteIndex+1)%(frames[spriteType]||6);
   if(spriteRemaining>0 && --spriteRemaining===0) play("idle");
 }
-$("clare-sprite").onerror=()=> { $("clare-sprite").onerror=null; $("clare-sprite").src="/matick.png"; };
+$("clare-sprite").onerror=()=> {
+  clareFallback=true;
+  const img=$("clare-sprite");
+  img.onerror=null;
+  img.src="/matick.png";
+  img.classList.add("fallback");
+};
 $("clare-action").onclick=()=> { play("waving"); announce("Mini Clare te saluda."); };
 setInterval(tick,160);
+function scrollTranscript() {
+  const area = $("conversation-area");
+  if(area) area.scrollTop = area.scrollHeight;
+}
+function syncConnectionUI() {
+  const online = !!server?.disponible;
+  const status = online ? "En línea" : (server?.estado || "Sin conexión");
+  for(const id of ["header-dot","desktop-dot"]) {
+    const dot=$(id); if(dot) dot.classList.toggle("online",online);
+  }
+  if($("header-status")) $("header-status").textContent=status;
+  if($("desktop-status")) $("desktop-status").textContent=status;
+  if($("desktop-model")) $("desktop-model").textContent=server?.modelo||"Modelo sin verificar";
+}
+function renderActivity() {
+  const root=$("activity-feed"); if(!root)return;
+  root.replaceChildren();
+  for(const entry of (events.length ? events.slice(-8).reverse() : ["Sin tareas recientes."])) {
+    const row=document.createElement("li"); row.textContent=entry; root.append(row);
+  }
+}
 function bubble(role, content) {
   const node=document.createElement("article"); node.className="message"+(role==="user"?" user":"");
   const author=document.createElement("strong");author.textContent=role==="user"?"Tú":"Matick Nube";
   const text=document.createElement("div");text.className="reply-text";text.textContent=content;
-  node.append(author,text);$("chat").append(node);$("chat").scrollTop=$("chat").scrollHeight;
+  node.append(author,text);$("chat").append(node);scrollTranscript();
   return text;
 }
 function drawChat() {
   $("chat").replaceChildren();
   for(const message of sessions[tab]||[]) bubble(message.role,message.content);
   $("welcome").hidden=(sessions[tab]||[]).length>0;
+  scrollTranscript();
 }
 function el(tag,text,className) {
   const node=document.createElement(tag);
@@ -108,7 +149,7 @@ function setTab(next) {
   if(conversation) drawChat(); else renderPage();
 }
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-function log(message) { events.push(message); events=events.slice(-30);announce(message);if(tab==="live")renderPage(); }
+function log(message) { events.push(message); events=events.slice(-30);announce(message);renderActivity();if(tab==="live")renderPage(); }
 function showAttachment() {
   $("attachments").replaceChildren();
   files.forEach((file,index)=>{
@@ -148,6 +189,7 @@ async function checkStatus() {
     server={disponible:false,estado:"Sin conexión con Matick Nube"};
     $("model-indicator").textContent="○ Sin conexión";$("model-indicator").classList.remove("online");
   }
+  syncConnectionUI();
   if(tab==="live")renderPage();
 }
 function handleAction(action){
@@ -205,7 +247,7 @@ $("editor").onsubmit=async e=>{
       if(!line.trim())return;
       const event=JSON.parse(line);
       if(event.tipo==="error")throw Error(event.valor||"Error de inferencia");
-      if(event.tipo==="texto"){full+=event.valor;output.textContent=full;$("chat").scrollTop=$("chat").scrollHeight;}
+      if(event.tipo==="texto"){full+=event.valor;output.textContent=full;scrollTranscript();}
       if(event.tipo==="estado"||event.tipo==="fin")log(event.valor);
       if(event.tipo==="fin")finished=true;
       if(event.tipo==="uso")log(event.valor+" tokens usados");
@@ -233,4 +275,4 @@ $("input").onkeydown=e=>{
     e.preventDefault();$("editor").requestSubmit();
   }
 };
-setTab("work");checkStatus();setInterval(checkStatus,15000);
+setTab("work");renderActivity();checkStatus();setInterval(checkStatus,15000);

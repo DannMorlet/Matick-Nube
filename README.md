@@ -24,8 +24,20 @@ Con Node.js 20 o posterior, ejecuta `npm test`. Para usar un servidor llama.cpp 
 
 La conversación permanece en la pestaña actual y se pierde al recargar. Las solicitudes se atienden de una en una; el contador no representa una cola. Para un servicio público sostenido aún hacen falta límites de uso por usuario, protección contra abuso, observabilidad y una política de privacidad. No se incluyen credenciales en el repositorio.
 
-## Hugging Face Spaces
+## Hugging Face Spaces y ZeroGPU
 
-La variante para el espacio gratuito ZeroGPU está en `huggingface/`. Descarga el GGUF de texto ya publicado en `danymorlet/Matick-Gemma-4-E2B-Mexicano-v3-GGUF` y usa llama-cpp-python. La GPU se solicita para cada respuesta y el contexto es de 16,384 tokens. El servicio está sujeto a las cuotas y a la disponibilidad de Hugging Face; la compatibilidad final debe validarse en el espacio.
+La variante de la nube está en `huggingface/`, con **FastAPI + llama.cpp en Docker**. Sirve `/api/estado`, `/api/chat` (respuesta NDJSON en streaming), y los archivos estáticos desde `huggingface/web/`. El modelo y el proyector visual se descargan en el servidor, no en el navegador.
 
-El espacio se administra por separado de este repositorio: los cambios en GitHub no se publican automáticamente en Hugging Face.
+**Importante:** esta implementación usa CPU. No solicita ZeroGPU ni incorpora el decorador `@spaces.GPU`. ZeroGPU de Hugging Face requiere un **Space Gradio**, mientras que esta variante utiliza Docker. No basta cambiar la etiqueta del hardware; una migración real requiere adaptar el servidor, el motor de inferencia y validar el modelo sobre ZeroGPU. Consulta la [documentación oficial](https://huggingface.co/docs/hub/spaces-zerogpu).
+
+### Interfaz 2026
+
+El frontend es responsivo, con navegación lateral y panel de actividad en escritorio, y navegación inferior en pantallas pequeñas. Conserva el envío de chat a `/api/chat`, los adjuntos, el historial por navegador, las herramientas disponibles y el estado real desde `/api/estado`. Las herramientas avanzadas se agrupan para reducir ruido visual.
+
+Los cuadros sobre MCP, NPU y agentes locales describen límites reales: **no ejecutan herramientas de Windows desde el Space**. Mini Clare intenta cargar sprites en `/clare/<estado>/<frame>.png`; si esos recursos no están publicados, usa `/matick.png` como alternativa animable. El avatar alternativo no equivale a integrar los sprites originales.
+
+### Publicación
+
+El repositorio de GitHub y el Space `danymorlet/Matick-Nube` se administran **por separado**: los cambios aquí **no se despliegan automáticamente**. Para actualizar el Space, hay que copiar el contenido de `huggingface/` a su repositorio de Hugging Face, configurar el Space con el SDK compatible y verificar la compilación y las rutas. No subir credenciales o archivos privados al repositorio público.
+
+Pruebas estáticas desde la raíz: `npm test`. Las comprobaciones de HTML, JavaScript y CSS **no sustituyen** una prueba de extremo a extremo en un Space desplegado.

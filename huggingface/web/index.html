@@ -11,11 +11,33 @@
 </head>
 <body>
   <div class="window-title">◉ &nbsp; Matick Studio LM Cloud</div>
+  <div class="app-shell">
+    <aside class="desktop-sidebar" aria-label="Navegación de Matick Nube">
+      <div class="brand-lockup">
+        <img src="/matick.png" alt="" class="brand-avatar">
+        <div><strong>Matick</strong><small>Studio LM · Nube</small></div>
+      </div>
+      <button class="new-conversation" type="button" data-action="new"><span aria-hidden="true">✎</span> Nueva conversación</button>
+      <p class="sidebar-label">TU ESPACIO</p>
+      <nav class="side-navigation" aria-label="Secciones">
+        <button type="button" data-tab="chat"><span aria-hidden="true">◇</span> Conversación</button>
+        <button type="button" data-tab="work"><span aria-hidden="true">⚡</span> Trabajo</button>
+        <button type="button" data-tab="projects"><span aria-hidden="true">▣</span> Proyectos</button>
+        <button type="button" data-tab="live"><span aria-hidden="true">◉</span> En vivo</button>
+        <button type="button" data-tab="more"><span aria-hidden="true">⚙</span> Configuración</button>
+      </nav>
+      <div class="sidebar-foot">
+        <span class="sidebar-foot-icon" aria-hidden="true">✦</span>
+        <div><strong>Espacio conectado a la nube</strong><small>Tu historial se guarda en este navegador.</small></div>
+      </div>
+    </aside>
+    <div class="app-main">
   <header class="topbar">
     <button class="icon-button" data-action="menu" aria-label="Abrir menú">☰</button>
-    <img class="profile-avatar" src="/clare/idle/00.png" alt="Mini Clare">
-    <div class="profile"><strong>Holaaa</strong><small>Trabajo con herramientas</small></div>
+    <img class="profile-avatar" src="/matick.png" alt="Matick Studio LM">
+    <div class="profile"><strong>Matick Studio LM</strong><small>Tu espacio de trabajo en la nube</small></div>
     <span class="top-spacer"></span>
+    <div class="header-status" role="status"><span class="connection-dot" id="header-dot" aria-hidden="true"></span><span id="header-status">Comprobando conexión</span></div>
     <button class="icon-button" data-action="activity" aria-label="Ver actividad">◫</button>
     <button class="icon-button" data-action="new" aria-label="Nueva conversación">✎</button>
   </header>
@@ -33,21 +55,26 @@
       <form id="editor" class="editor">
         <textarea id="input" rows="2" maxlength="8000" placeholder="Trabaja con Matick Studio LM… (Enter envía · Shift + Enter nueva línea)" aria-label="Tu mensaje"></textarea>
         <div id="attachments" class="attachments"></div>
-        <div class="chips">
-          <button type="button" data-action="attach" class="chip icon-only" title="Adjuntar hasta tres archivos">⊕</button>
+        <div class="chips chips-main" aria-label="Acciones frecuentes">
+          <button type="button" data-action="attach" class="chip icon-only" title="Adjuntar hasta tres archivos" aria-label="Adjuntar archivo">⊕</button>
           <button type="button" id="think" class="chip lavender" aria-pressed="false">💡 Pensar</button>
           <button type="button" data-action="vision" class="chip mint">◉ Visión</button>
-          <button type="button" data-action="models" class="chip blue">◆ Modelos</button>
-          <button type="button" data-action="tools" class="chip butter">⚙ Herramientas</button>
-          <button type="button" data-action="mcp" class="chip sky">⌘ MCP</button>
-          <button type="button" data-action="skills" class="chip lavender">✧ Habilidades</button>
-          <button type="button" data-action="npu" class="chip grey">NPU</button>
-          <button type="button" data-action="agent" class="chip butter">🧭 Agente</button>
           <button type="button" id="web" class="chip mint">🌐 Internet · auto</button>
-          <button type="button" data-action="ideas" class="chip mint">💡 Ideas</button>
-          <button type="button" data-action="media" class="chip blue">🚀 Media</button>
-          <button type="button" data-action="motor" class="chip plain">✳ llama.cpp</button>
         </div>
+        <details class="advanced-tools">
+          <summary>Más herramientas <span>Modelos, MCP y opciones avanzadas</span></summary>
+          <div class="chips chips-advanced">
+            <button type="button" data-action="models" class="chip blue">◆ Modelos</button>
+            <button type="button" data-action="tools" class="chip butter">⚙ Herramientas</button>
+            <button type="button" data-action="mcp" class="chip sky">⌘ MCP</button>
+            <button type="button" data-action="skills" class="chip lavender">✧ Habilidades</button>
+            <button type="button" data-action="npu" class="chip grey">NPU</button>
+            <button type="button" data-action="agent" class="chip butter">🧭 Agente</button>
+            <button type="button" data-action="ideas" class="chip mint">💡 Ideas</button>
+            <button type="button" data-action="media" class="chip blue">🚀 Media</button>
+            <button type="button" data-action="motor" class="chip plain">✳ llama.cpp</button>
+          </div>
+        </details>
         <div class="editor-bottom">
           <span id="model-indicator" class="model-indicator" role="status">● Comprobando modelo</span>
           <button type="submit" id="send" aria-label="Enviar mensaje">➤</button>
@@ -66,6 +93,26 @@
       <h1 id="page-heading"></h1>
       <div id="page-content"></div>
     </section>
+  </div>
+    </div>
+    <aside class="desktop-inspector" aria-label="Panel de Matick">
+      <div class="inspector-heading"><strong>Panel de Matick</strong><span aria-hidden="true">✧</span></div>
+      <div class="inspector-card live-card">
+        <p class="inspector-overline">ESTADO DEL MOTOR</p>
+        <div class="inspector-status"><span class="connection-dot" id="desktop-dot" aria-hidden="true"></span><strong id="desktop-status">Comprobando conexión…</strong></div>
+        <p id="desktop-model">Sin verificar</p>
+        <button type="button" data-action="check" class="inspector-check">⟳ Actualizar estado</button>
+      </div>
+      <div class="inspector-card">
+        <p class="inspector-overline">ACTIVIDAD</p>
+        <ol id="activity-feed" class="activity-feed" aria-live="polite"><li>Sin tareas recientes.</li></ol>
+      </div>
+      <div class="inspector-card note-card">
+        <p class="inspector-overline">HERRAMIENTAS DISPONIBLES</p>
+        <p>Chat con IA · visión · adjuntos · búsqueda web</p>
+        <small>El control de Windows, la NPU y los MCP locales requieren Matick Studio LM en tu PC.</small>
+      </div>
+    </aside>
   </div>
 
   <div class="clare-floating" aria-label="Mini Clare animada">
