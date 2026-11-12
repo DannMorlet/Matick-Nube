@@ -22,9 +22,12 @@ MODELO = hf_hub_download("danymorlet/Matick-Gemma-4-E2B-Mexicano-v3-GGUF",
 @spaces.GPU(duration=60)
 def generar(mensajes):
     from llama_cpp import Llama
-    with Llama(model_path=MODELO, n_ctx=16384, n_gpu_layers=-1, verbose=False) as motor:
+    motor = Llama(model_path=MODELO, n_ctx=16384, n_gpu_layers=-1, verbose=False)
+    try:
         resultado = motor.create_chat_completion(messages=mensajes, max_tokens=512, temperature=0.6)
         return resultado["choices"][0]["message"].get("content") or "Intenta reformular tu mensaje."
+    finally:
+        motor.close()
 
 
 def responder(mensaje, historial):
