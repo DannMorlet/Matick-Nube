@@ -15,7 +15,7 @@ test("el JavaScript de la interfaz tiene sintaxis válida", () => {
 });
 
 test("los controles del chat y el panel comparten IDs únicos", () => {
-  const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map((match) => match[1]);
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(ids).size, ids.length);
   for (const name of [
     "editor", "input", "send", "think", "web", "files", "chat",
