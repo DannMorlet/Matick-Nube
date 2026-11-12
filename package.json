@@ -1,0 +1,8 @@
+{
+  "name": "matick-nube",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interfaz ligera para Matick Gemma en la nube",
+  "scripts": {"start": "node servidor.js", "test": "node --test pruebas/*.test.js"},
+  "engines": {"node": ">=20"}
+}

@@ -1,0 +1,16 @@
+services:
+  matick:
+    build: .
+    ports:
+      - "${PUERTO:-8080}:8080"
+    environment:
+      LLAMA_URL: http://modelo:8081
+    depends_on:
+      - modelo
+    restart: unless-stopped
+  modelo:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    command: ["-m", "/modelos/matick.gguf", "--host", "0.0.0.0", "--port", "8081", "--ctx-size", "4096", "--parallel", "1"]
+    volumes:
+      - ./modelos:/modelos:ro
+    restart: unless-stopped
