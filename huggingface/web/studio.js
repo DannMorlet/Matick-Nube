@@ -6,7 +6,7 @@ let sessions = saved(key, {chat:[],work:[]}), projects = saved(projectKey,[]);
 if (!sessions || !Array.isArray(sessions.chat) || !Array.isArray(sessions.work)) sessions = {chat:[],work:[]};
 if (!Array.isArray(projects)) projects = [];
 let tab = "work", busy = false, files = [], events = [], modeWeb = "auto", careful = false, speak = false, server = null;
-let spriteType = "idle", spriteIndex = 0, spriteRemaining = 0;
+let spriteType = "idle", spriteIndex = 0, spriteRemaining = 0, clareFallback = false;
 const frames = {idle:6,waving:4,review:6,failed:8};
 function announce(msg) { $("announcement").textContent = msg; }
 function persist() {
@@ -24,15 +24,34 @@ function modal(title,message) {
   if (!$("modal").open) $("modal").showModal();
 }
 $("close").onclick=()=> $("modal").close();
-function play(type) { spriteType=type; spriteIndex=0; spriteRemaining=type==="idle"?0:frames[type]*2; }
+function play(type) {
+  spriteType=type; spriteIndex=0; spriteRemaining=type==="idle"?0:frames[type]*2;
+  const img=$("clare-sprite");
+  if(clareFallback && img && typeof img.animate==="function" &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    img.animate([
+      {transform:"translateY(0) rotate(0deg)"},
+      {transform:"translateY(-9px) rotate(-9deg)"},
+      {transform:"translateY(-4px) rotate(8deg)"},
+      {transform:"translateY(0) rotate(0deg)"}
+    ],{duration:680,easing:"ease-in-out"});
+  }
+}
 function tick() {
+  if(clareFallback) return;
   const img=$("clare-sprite");
   const src="/clare/"+spriteType+"/"+String(spriteIndex).padStart(2,"0")+".png";
   if(img.getAttribute("src")!==src) img.src=src;
   spriteIndex=(spriteIndex+1)%(frames[spriteType]||6);
   if(spriteRemaining>0 && --spriteRemaining===0) play("idle");
 }
-$("clare-sprite").onerror=()=> { $("clare-sprite").onerror=null; $("clare-sprite").src="/matick.png"; };
+$("clare-sprite").onerror=()=> {
+  clareFallback=true;
+  const img=$("clare-sprite");
+  img.onerror=null;
+  img.src="/matick.png";
+  img.classList.add("fallback");
+};
 $("clare-action").onclick=()=> { play("waving"); announce("Mini Clare te saluda."); };
 setInterval(tick,160);
 function scrollTranscript() {
