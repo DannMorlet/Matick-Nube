@@ -26,6 +26,6 @@ La conversación permanece en la pestaña actual y se pierde al recargar. Las so
 
 ## Hugging Face Spaces
 
-La variante para el espacio gratuito ZeroGPU está en `huggingface/`. Descarga el GGUF de texto ya publicado en `danymorlet/Matick-Gemma-4-E2B-Mexicano-v3-GGUF` y usa llama-cpp-python. La GPU se solicita para cada respuesta y el contexto es de 4,096 tokens. El servicio está sujeto a las cuotas y a la disponibilidad de Hugging Face; la compatibilidad final debe validarse en el espacio.
+La variante para el espacio gratuito ZeroGPU está en `huggingface/`. Descarga el GGUF de texto ya publicado en `danymorlet/Matick-Gemma-4-E2B-Mexicano-v3-GGUF` y usa llama-cpp-python. La GPU se solicita para cada respuesta y el contexto es de 16,384 tokens. El servicio está sujeto a las cuotas y a la disponibilidad de Hugging Face; la compatibilidad final debe validarse en el espacio.
 
 El espacio se administra por separado de este repositorio: los cambios en GitHub no se publican automáticamente en Hugging Face.

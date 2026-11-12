@@ -35,7 +35,7 @@ def responder(mensaje, historial):
         if isinstance(item, dict) and item.get("role") in ("user", "assistant") and isinstance(item.get("content"), str):
             mensajes.append({"role": item["role"], "content": item["content"][:8000]})
     mensajes.append({"role": "user", "content": mensaje})
-    motor = Llama(model_path=MODELO, n_ctx=4096, n_gpu_layers=-1, verbose=False)
+    motor = Llama(model_path=MODELO, n_ctx=16384, n_gpu_layers=-1, verbose=False)
     try:
         salida = motor.create_chat_completion(messages=mensajes, max_tokens=512, temperature=0.7)
         return salida["choices"][0]["message"].get("content") or "No pude generar una respuesta. Intenta de nuevo."
