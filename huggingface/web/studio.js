@@ -35,17 +35,39 @@ function tick() {
 $("clare-sprite").onerror=()=> { $("clare-sprite").onerror=null; $("clare-sprite").src="/matick.png"; };
 $("clare-action").onclick=()=> { play("waving"); announce("Mini Clare te saluda."); };
 setInterval(tick,160);
+function scrollTranscript() {
+  const area = $("conversation-area");
+  if(area) area.scrollTop = area.scrollHeight;
+}
+function syncConnectionUI() {
+  const online = !!server?.disponible;
+  const status = online ? "En línea" : (server?.estado || "Sin conexión");
+  for(const id of ["header-dot","desktop-dot"]) {
+    const dot=$(id); if(dot) dot.classList.toggle("online",online);
+  }
+  if($("header-status")) $("header-status").textContent=status;
+  if($("desktop-status")) $("desktop-status").textContent=status;
+  if($("desktop-model")) $("desktop-model").textContent=server?.modelo||"Modelo sin verificar";
+}
+function renderActivity() {
+  const root=$("activity-feed"); if(!root)return;
+  root.replaceChildren();
+  for(const entry of (events.length ? events.slice(-8).reverse() : ["Sin tareas recientes."])) {
+    const row=document.createElement("li"); row.textContent=entry; root.append(row);
+  }
+}
 function bubble(role, content) {
   const node=document.createElement("article"); node.className="message"+(role==="user"?" user":"");
   const author=document.createElement("strong");author.textContent=role==="user"?"Tú":"Matick Nube";
   const text=document.createElement("div");text.className="reply-text";text.textContent=content;
-  node.append(author,text);$("chat").append(node);$("chat").scrollTop=$("chat").scrollHeight;
+  node.append(author,text);$("chat").append(node);scrollTranscript();
   return text;
 }
 function drawChat() {
   $("chat").replaceChildren();
   for(const message of sessions[tab]||[]) bubble(message.role,message.content);
   $("welcome").hidden=(sessions[tab]||[]).length>0;
+  scrollTranscript();
 }
 function el(tag,text,className) {
   const node=document.createElement(tag);
@@ -108,7 +130,7 @@ function setTab(next) {
   if(conversation) drawChat(); else renderPage();
 }
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-function log(message) { events.push(message); events=events.slice(-30);announce(message);if(tab==="live")renderPage(); }
+function log(message) { events.push(message); events=events.slice(-30);announce(message);renderActivity();if(tab==="live")renderPage(); }
 function showAttachment() {
   $("attachments").replaceChildren();
   files.forEach((file,index)=>{
@@ -148,6 +170,7 @@ async function checkStatus() {
     server={disponible:false,estado:"Sin conexión con Matick Nube"};
     $("model-indicator").textContent="○ Sin conexión";$("model-indicator").classList.remove("online");
   }
+  syncConnectionUI();
   if(tab==="live")renderPage();
 }
 function handleAction(action){
@@ -205,7 +228,7 @@ $("editor").onsubmit=async e=>{
       if(!line.trim())return;
       const event=JSON.parse(line);
       if(event.tipo==="error")throw Error(event.valor||"Error de inferencia");
-      if(event.tipo==="texto"){full+=event.valor;output.textContent=full;$("chat").scrollTop=$("chat").scrollHeight;}
+      if(event.tipo==="texto"){full+=event.valor;output.textContent=full;scrollTranscript();}
       if(event.tipo==="estado"||event.tipo==="fin")log(event.valor);
       if(event.tipo==="fin")finished=true;
       if(event.tipo==="uso")log(event.valor+" tokens usados");
@@ -233,4 +256,4 @@ $("input").onkeydown=e=>{
     e.preventDefault();$("editor").requestSubmit();
   }
 };
-setTab("work");checkStatus();setInterval(checkStatus,15000);
+setTab("work");renderActivity();checkStatus();setInterval(checkStatus,15000);
