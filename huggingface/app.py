@@ -60,4 +60,4 @@ with gr.Blocks(title="Matick Nube", css=CSS, theme=gr.themes.Soft(primary_hue="a
     gr.Markdown("Matick puede cometer errores. Verifica la información importante. El servicio gratuito tiene límites de uso y puede requerir espera.")
 
 if __name__ == "__main__":
-    demo.queue(default_concurrency_limit=1).launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", "7860")), ssr_mode=False)
+    demo.queue(default_concurrency_limit=1).launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", "7860")), ssr_mode=False, css=CSS + "\n#inicio h1, #marca, #marca *, #nube, #nube * {color:#211a0c !important;}\n", theme=gr.themes.Soft(primary_hue="amber"))
