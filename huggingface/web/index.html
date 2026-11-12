@@ -1,15 +1,95 @@
 <!doctype html>
-<html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matick Studio LM · Nube</title><link rel="icon" href="/matick.png"><link rel="stylesheet" href="/studio.css"><script defer src="/studio.js"></script></head>
-<body><div class="titulo">☁ &nbsp; Matick Studio LM Cloud</div><div class="estudio">
-<nav class="riel" aria-label="Accesos rápidos"><button data-accion="historial" title="Conversaciones">◧</button><button data-accion="modelo" title="Modelo">◈</button><button data-accion="nuevo" title="Nueva conversación">ϟ</button><button data-accion="actividad" title="Actividad">☷</button></nav>
-<aside id="lateral"><div class="marca"><img src="/matick.png" alt=""><div><strong>Matick</strong><small>Studio LM · Morlet</small></div></div>
-<button data-accion="nuevo" class="principal">✎ &nbsp; Nueva conversación</button><input id="filtro" type="search" placeholder="Buscar conversaciones…" aria-label="Buscar conversaciones"><h3>Opciones de Matick</h3><button data-accion="modelo">◈ &nbsp; Modelos IA</button><button data-accion="motor">ϟ &nbsp; Motores</button><button data-accion="herramientas">⚙ &nbsp; Herramientas</button><h3>Conversaciones</h3><div id="lista"></div></aside>
-<section class="centro"><header><b>Matick Studio LM <em>/</em> <span>Nube</span></b><strong class="modo">Nube</strong><div class="acciones"><button data-accion="actividad">API</button><button data-accion="historial">Menú</button><small id="estado">Conectando…</small><button data-accion="panel" aria-label="Panel de Matick">◧</button></div></header>
-<main><section id="bienvenida"><div class="rayo">ϟ</div><h1>¿En qué trabajamos?</h1><p>Tu espacio para crear, programar y experimentar con Matick.</p></section>
-<div id="chat" aria-live="polite"></div><form id="editor"><textarea id="entrada" rows="3" maxlength="8000" aria-label="Mensaje" placeholder="Trabaja con Matick Studio LM…   (Enter envía · Shift + Enter nueva línea)"></textarea><div id="adjuntos"></div>
-<div class="chips"><button type="button" data-accion="archivo" aria-label="Adjuntar archivo">＋</button><button type="button" data-accion="imagen" class="verde">◉ &nbsp;Visión</button><button type="button" data-accion="modelo" class="azul">◈ &nbsp;Modelos</button><button type="button" data-accion="herramientas">⚙ &nbsp;Herramientas</button><button type="button" id="web" class="violeta">⌕ &nbsp;Internet · automático</button><button type="button" data-accion="motor">✳ &nbsp;llama.cpp</button></div>
-<div class="enviar"><small>◈ &nbsp;Matick Gemma 4 E2B</small><button id="enviar" aria-label="Enviar mensaje">➤</button></div></form>
-<input hidden type="file" id="archivo" multiple accept=".png,.jpg,.jpeg,.webp,.txt,.md,.csv,.json,.pdf">
-<div class="atajos"><button data-accion="nuevo">✎ &nbsp; Nueva conversación</button><button data-accion="modelo">◈ &nbsp; Modelo activo</button><button data-accion="actividad">☷ &nbsp; Ver actividad</button></div><p id="aviso" role="status"></p></main></section>
-<aside id="panel"><h2>Panel de Matick</h2><section><strong>☁ &nbsp; Servidor en la nube</strong><small>Hugging Face · CPU</small></section><h3>En vivo</h3><section id="eventos" aria-live="polite">Sin tareas en curso</section><section><strong>Matick Gemma 4 E2B</strong><small>Mexicano v3 · 16,384 tokens</small></section></aside></div>
-<dialog><button id="cerrar" aria-label="Cerrar">×</button><h2 id="seccion"></h2><div id="detalle"></div></dialog></body></html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fffdf7">
+  <title>Matick Studio LM Cloud · Morlet</title>
+  <link rel="icon" href="/matick.png">
+  <link rel="stylesheet" href="/studio.css">
+  <script defer src="/studio.js"></script>
+</head>
+<body>
+  <div class="window-title">◉ &nbsp; Matick Studio LM Cloud</div>
+  <header class="topbar">
+    <button class="icon-button" data-action="menu" aria-label="Abrir menú">☰</button>
+    <img class="profile-avatar" src="/clare/idle/00.png" alt="Mini Clare">
+    <div class="profile"><strong>Holaaa</strong><small>Trabajo con herramientas</small></div>
+    <span class="top-spacer"></span>
+    <button class="icon-button" data-action="activity" aria-label="Ver actividad">◫</button>
+    <button class="icon-button" data-action="new" aria-label="Nueva conversación">✎</button>
+  </header>
+
+  <div class="workspace">
+    <main id="home" class="page" aria-label="Conversación">
+      <div class="conversation-area" id="conversation-area">
+        <section id="welcome" class="welcome">
+          <div class="bolt">⚡</div>
+          <h1>¿En qué trabajamos?</h1>
+          <p>Tu espacio para crear, programar y experimentar con Matick.</p>
+        </section>
+        <section id="chat" class="chat" aria-live="polite"></section>
+      </div>
+      <form id="editor" class="editor">
+        <textarea id="input" rows="2" maxlength="8000" placeholder="Trabaja con Matick Studio LM… (Enter envía · Shift + Enter nueva línea)" aria-label="Tu mensaje"></textarea>
+        <div id="attachments" class="attachments"></div>
+        <div class="chips">
+          <button type="button" data-action="attach" class="chip icon-only" title="Adjuntar hasta tres archivos">⊕</button>
+          <button type="button" id="think" class="chip lavender" aria-pressed="false">💡 Pensar</button>
+          <button type="button" data-action="vision" class="chip mint">◉ Visión</button>
+          <button type="button" data-action="models" class="chip blue">◆ Modelos</button>
+          <button type="button" data-action="tools" class="chip butter">⚙ Herramientas</button>
+          <button type="button" data-action="mcp" class="chip sky">⌘ MCP</button>
+          <button type="button" data-action="skills" class="chip lavender">✧ Habilidades</button>
+          <button type="button" data-action="npu" class="chip grey">NPU</button>
+          <button type="button" data-action="agent" class="chip butter">🧭 Agente</button>
+          <button type="button" id="web" class="chip mint">🌐 Internet · auto</button>
+          <button type="button" data-action="ideas" class="chip mint">💡 Ideas</button>
+          <button type="button" data-action="media" class="chip blue">🚀 Media</button>
+          <button type="button" data-action="motor" class="chip plain">✳ llama.cpp</button>
+        </div>
+        <div class="editor-bottom">
+          <span id="model-indicator" class="model-indicator" role="status">● Comprobando modelo</span>
+          <button type="submit" id="send" aria-label="Enviar mensaje">➤</button>
+        </div>
+      </form>
+      <div class="quick-actions">
+        <button data-action="check" class="primary">⟳ &nbsp; Comprobar conexión</button>
+        <button data-action="projects">▣ Proyectos y tareas</button>
+        <button data-action="models">◆ Seleccionar modelo</button>
+        <button data-action="tools">⚙ Conectores y herramientas</button>
+      </div>
+      <p class="footer-hint">En Nube, Matick puede responder, buscar información y leer adjuntos. Las herramientas locales, NPU y MCP no se ejecutan desde este servidor.</p>
+    </main>
+
+    <section id="other-page" class="page other-page" hidden>
+      <h1 id="page-heading"></h1>
+      <div id="page-content"></div>
+    </section>
+  </div>
+
+  <div class="clare-floating" aria-label="Mini Clare animada">
+    <button id="clare-action" class="clare-image" title="Saluda a Mini Clare" aria-label="Saludar a Mini Clare">
+      <img id="clare-sprite" src="/clare/idle/00.png" alt="">
+    </button>
+    <div class="pet-toolbar">
+      <button data-action="attach" title="Adjuntar">＋</button>
+      <button id="voice" title="Leer respuestas en voz alta" aria-pressed="false">♬</button>
+      <button data-action="activity" title="Actividad">☷</button>
+      <button data-action="new" title="Nuevo chat">⇧</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button data-tab="chat"><span>💬</span>Chat</button>
+    <button data-tab="work" class="selected" aria-current="page"><span class="selected-icon">⚡</span>Trabajo</button>
+    <button data-tab="projects"><span>📁</span>Proyectos</button>
+    <button data-tab="live"><span>◉</span>En vivo</button>
+    <button data-tab="more"><span>☷</span>Más</button>
+  </nav>
+
+  <input id="files" type="file" hidden multiple accept=".png,.jpg,.jpeg,.webp,.txt,.md,.csv,.json,.pdf">
+  <dialog id="modal"><button id="close" class="modal-close" aria-label="Cerrar">×</button><h2 id="modal-title"></h2><div id="modal-body"></div></dialog>
+  <p id="announcement" class="sr-only" role="status"></p>
+</body>
+</html>
